@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>AquaGuard - Real-Time Alerts</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- CSS (ONLY ONE, correct path) -->
+  <link rel="stylesheet" href="css/style.css">
+
   <style>
     body {
       background-color: #e0f7fa;
@@ -30,38 +33,37 @@
     }
   </style>
 
-  <!-- Firebase SDK (freshly added) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDukojn29YNXCDuJMg42Hf16KQACimWDiU",
-      authDomain: "aquaguard-6df87.firebaseapp.com",
-      projectId: "aquaguard-6df87",
-      storageBucket: "aquaguard-6df87.firebasestorage.app",
-      messagingSenderId: "158543306089",
-      appId: "1:158543306089:web:329bd1e66b9ae1391431f8"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-  </script>
 </head>
+
 <body>
+
   <div id="alertBox">
-    <h3 style="color:#0077b6;">Real-Time AquaGuard Alerts</h3>
+    <h3>Real-Time AquaGuard Alerts</h3>
     <ul id="alertsList">
       <li>Loading alerts...</li>
     </ul>
   </div>
 
-  <!-- Link to your existing alerts.js -->
-  <script src="alerts.js"></script>
+  <!-- Firebase INIT (VERY IMPORTANT) -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDukojn29YNXCDuJMg42Hf16KQACimWDiU",
+      authDomain: "aquaguard-6df87.firebaseapp.com",
+      projectId: "aquaguard-6df87",
+      storageBucket: "aquaguard-6df87.appspot.com",
+      messagingSenderId: "158543306089",
+      appId: "1:158543306089:web:329bd1e66b9ae1391431f8"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- JS files (correct paths) -->
+  <script src="js/alerts.js"></script>
+
 </body>
 </html>

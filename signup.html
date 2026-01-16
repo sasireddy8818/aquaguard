@@ -2,38 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AquaGuard | Sign Up</title>
-  <link rel="stylesheet" href="style.css">
+  <title>AquaGuard | Signup</title>
+  <link rel="stylesheet" href="css/style.css">
 
-  <!-- Firebase SDK (Compat) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-  <script>
-    // 🔹 Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDukojn29YNXCDuJMg42Hf16KQACimWDiU",
-      authDomain: "aquaguard-6df87.firebaseapp.com",
-      projectId: "aquaguard-6df87",
-      storageBucket: "aquaguard-6df87.firebasestorage.app",
-      messagingSenderId: "158543306089",
-      appId: "1:158543306089:web:329bd1e66b9ae1391431f8"
-    };
-
-    // 🔹 Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-  </script>
-
   <style>
     body {
       background: #e0f7fa;
-      color: #01579b;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -48,75 +29,62 @@
       width: 350px;
       text-align: center;
     }
-    .auth-card h1 { margin-bottom: 5px; }
-    .auth-card p.subtitle { margin-bottom: 20px; font-size: 0.9rem; color: #0288d1; }
-    .auth-card input {
-      width: 90%;
+    .auth-card input, .auth-card button {
+      width: 95%;
       padding: 10px;
       margin: 8px 0;
-      border: 1px solid #0288d1;
       border-radius: 8px;
+      border: 1px solid #0288d1;
     }
     .auth-card button {
       background: #0288d1;
       color: white;
-      padding: 10px 20px;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
-      margin-top: 10px;
-      width: 95%;
     }
-    .auth-card button:hover { background: #0277bd; }
-    .auth-card p.switch { margin-top: 15px; font-size: 0.9rem; }
-    .auth-card p.switch a { color: #0288d1; text-decoration: none; font-weight: bold; }
+    .auth-card button:hover {
+      background: #0277bd;
+    }
   </style>
 </head>
 <body>
 
-<div class="auth-card">
-  <h1>🌊 AquaGuard</h1>
-  <p class="subtitle">Join AquaGuard</p>
+  <div class="auth-card">
+    <h1>🌊 AquaGuard</h1>
+    <input type="email" id="email" placeholder="Enter email">
+    <input type="password" id="password" placeholder="Enter password">
+    <button id="signupBtn">Sign Up</button>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </div>
 
-  <input type="email" id="email" placeholder="Enter email">
-  <input type="password" id="password" placeholder="Create password">
-  <input type="password" id="confirmPassword" placeholder="Confirm password">
+  <!-- Firebase initialization -->
+  <script src="js/Firebase.js"></script>
 
-  <button id="signupBtn">Sign Up</button>
+  <!-- Signup logic -->
+  <script>
+    const signupBtn = document.getElementById("signupBtn");
 
-  <p class="switch">
-    Already have an account? <a href="login.html">Login</a>
-  </p>
-</div>
+    signupBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // Prevent page refresh
 
-<script>
-  const signupBtn = document.getElementById("signupBtn");
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-  signupBtn.addEventListener("click", () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
+      if(!email || !password){
+        alert("Please enter email and password");
+        return;
+      }
 
-    if(!email || !password || !confirmPassword){
-      alert("Please fill all fields");
-      return;
-    }
-    if(password !== confirmPassword){
-      alert("Passwords do not match");
-      return;
-    }
-
-    // 🔹 Firebase Auth signup
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        alert("Account created successfully! Please login.");
-        window.location.href = "login.html";
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  });
-</script>
-
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          console.log("Signup success:", userCredential.user.email);
+          alert("Account created! Redirecting to home page...");
+          window.location.replace("home.html"); // Redirect safely
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    });
+  </script>
 </body>
 </html>

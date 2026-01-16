@@ -3,90 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>AquaGuard | Login</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 
   <!-- Firebase SDK (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-  <script>
-    // 🔹 Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDukojn29YNXCDuJMg42Hf16KQACimWDiU",
-      authDomain: "aquaguard-6df87.firebaseapp.com",
-      projectId: "aquaguard-6df87",
-      storageBucket: "aquaguard-6df87.firebasestorage.app",
-      messagingSenderId: "158543306089",
-      appId: "1:158543306089:web:329bd1e66b9ae1391431f8"
-    };
-
-    // 🔹 Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-  </script>
-
-  <style>
-    /* Blue & white theme */
-    body {
-      background: #e0f7fa;
-      color: #01579b;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .auth-card {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-      width: 350px;
-      text-align: center;
-    }
-    .auth-card h1 {
-      margin-bottom: 5px;
-    }
-    .auth-card p.tagline {
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-      color: #0288d1;
-    }
-    .auth-card input {
-      width: 90%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #0288d1;
-      border-radius: 8px;
-    }
-    .auth-card button {
-      background: #0288d1;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      width: 95%;
-    }
-    .auth-card button:hover {
-      background: #0277bd;
-    }
-    .auth-card p.switch {
-      margin-top: 15px;
-      font-size: 0.9rem;
-    }
-    .auth-card p.switch a {
-      color: #0288d1;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
 </head>
 <body>
 
@@ -99,15 +22,20 @@
     <button id="loginBtn">Login</button>
 
     <p class="switch">
-      Don’t have an account?
-      <a href="signup.html">Sign up</a>
+      Don’t have an account? <a href="signup.html">Sign up</a>
     </p>
   </div>
 
+  <!-- 🔹 Include Firebase initialization first -->
+  <script src="js/Firebase.js"></script>
+
+  <!-- 🔹 Login logic -->
   <script>
     const loginBtn = document.getElementById("loginBtn");
 
-    loginBtn.addEventListener("click", () => {
+    loginBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // Stop page refresh if in a form
+
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
@@ -116,17 +44,15 @@
         return;
       }
 
-      // 🔹 Firebase Auth login
       auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
           console.log("Logged in:", userCredential.user.email);
-          window.location.href = "home.html"; // go to home page
+          window.location.replace("home.html"); // redirect safely
         })
         .catch((error) => {
           alert(error.message);
         });
     });
   </script>
-
 </body>
 </html>
