@@ -4,41 +4,78 @@
   <meta charset="UTF-8">
   <title>AquaGuard | Fish Health</title>
 
-  <!-- Correct CSS path -->
   <link rel="stylesheet" href="css/style.css">
 
   <style>
     body { 
-      background-color: #e0f7fa; 
+      background: #e0f7fa; 
       font-family: Arial, sans-serif; 
       color: #0077b6; 
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 420px;
+      background: white;
+      margin-top: 30px;
       padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
-    h1 { text-align: center; color: #0077b6; }
-    select, input, button { 
-      margin: 10px 0; 
-      padding: 8px; 
-      border-radius: 5px; 
-      border: 1px solid #0077b6;
+
+    h1 { 
+      text-align: center; 
+      color: #0077b6; 
+      margin-bottom: 20px;
+      font-size: 26px;
     }
-    button { 
-      cursor: pointer; 
-      background-color:#0077b6; 
-      color:#fff; 
-      border:none;
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input[type="file"], button {
       width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #0077b6;
       font-size: 16px;
+      background: #ffffff;
     }
+
     .fish-info-box { 
-      border: 1px solid #0077b6; 
-      padding: 10px; 
-      margin: 5px 0; 
-      border-radius: 5px; 
-      background-color: #ffffff; 
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #0077b6;
+      margin-top: 10px;
+      background: #f8fcff;
+      font-size: 15px;
+    }
+
+    button {
+      background: #0077b6;
+      color: #ffffff;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #005f86;
     }
   </style>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -47,84 +84,128 @@
 
 <body>
 
-<h1>🌊 AquaGuard - Fish Health</h1>
+<div class="container">
 
-<label for="fishSelect">Select Fish:</label>
-<select id="fishSelect">
-  <option value="">-- Select Fish --</option>
-</select>
+  <h1>🐟 Fish Health</h1>
 
-<div id="fishName" class="fish-info-box">Official Name: -</div>
-<div id="fishDisease" class="fish-info-box">Possible Diseases: -</div>
-<div id="fishPH" class="fish-info-box">Optimal pH Level: -</div>
+  <label for="fishSelect">Select Fish</label>
+  <select id="fishSelect">
+    <option value="">-- Select Fish --</option>
+  </select>
 
-<input type="file" id="fishPhoto" accept="image/*">
-<button onclick="postToCommunity()">Post to Community</button>
+  <div id="fishName" class="fish-info-box">Official Name: -</div>
+  <div id="fishDisease" class="fish-info-box">Possible Diseases: -</div>
+  <div id="fishPH" class="fish-info-box">Optimal pH Level: -</div>
 
-<!-- Firebase INIT -->
+  <label>Upload Fish Image</label>
+  <input type="file" id="fishPhoto" accept="image/*">
+
+  <button onclick="postToCommunity()">Post to Community</button>
+
+</div>
+
 <script>
-const fishDB = [
-  { name: "Tilapia", diseases: ["Fin rot", "Columnaris"], ph: "6.5 - 8.5" },
-  { name: "Rohu", diseases: ["EUS", "Gill rot"], ph: "6.0 - 7.5" },
-  { name: "Catla", diseases: ["Dropsy", "Fin rot"], ph: "6.5 - 7.5" },
-  { name: "Common Carp", diseases: ["Koi herpesvirus", "Ulcer disease"], ph: "6.5 - 8.0" },
-  { name: "Grass Carp", diseases: ["Bacterial gill disease"], ph: "6.5 - 8.0" },
-  { name: "Silver Carp", diseases: ["Parasitic infection"], ph: "6.5 - 8.0" },
-  { name: "Milkfish", diseases: ["Vibriosis"], ph: "7.0 - 8.5" },
-  { name: "Salmon", diseases: ["Sea lice", "Furunculosis"], ph: "6.8 - 7.5" },
-  { name: "Tuna", diseases: ["Parasitic worms"], ph: "7.5 - 8.4" },
-  { name: "Cod", diseases: ["Viral hemorrhagic septicemia"], ph: "7.0 - 8.5" },
-
-  { name: "Mackerel", diseases: ["Gill parasites"], ph: "7.5 - 8.5" },
-  { name: "Sardine", diseases: ["Bacterial infection"], ph: "7.5 - 8.5" },
-  { name: "Anchovy", diseases: ["Parasitic disease"], ph: "7.5 - 8.5" },
-  { name: "Snapper", diseases: ["Fin erosion"], ph: "7.8 - 8.4" },
-  { name: "Grouper", diseases: ["Vibriosis"], ph: "7.8 - 8.4" },
-  { name: "Barramundi", diseases: ["Streptococcosis"], ph: "6.8 - 8.2" },
-  { name: "Pomfret", diseases: ["Fungal infection"], ph: "7.0 - 8.0" },
-  { name: "Hilsa", diseases: ["EUS"], ph: "6.5 - 7.5" },
-  { name: "Trout", diseases: ["Whirling disease"], ph: "6.5 - 7.5" },
-  { name: "Eel", diseases: ["Skin parasites"], ph: "6.5 - 8.0" },
-
-  { name: "Swordfish", diseases: ["Parasitic worms"], ph: "7.8 - 8.4" },
-  { name: "Marlin", diseases: ["Gill disease"], ph: "7.8 - 8.4" },
-  { name: "Shark", diseases: ["Skin infection"], ph: "7.5 - 8.5" },
-  { name: "Ray", diseases: ["Parasitic infection"], ph: "7.5 - 8.5" },
-  { name: "Seahorse", diseases: ["Tail rot"], ph: "7.8 - 8.4" },
-  { name: "Clownfish", diseases: ["Brooklynella"], ph: "7.8 - 8.4" },
+  const fishDB = [
+  { name: "Acanthurus", diseases: ["Ich"], ph: "7.8 - 8.4" },
+  { name: "Albacore Tuna", diseases: ["Parasitic worms"], ph: "7.5 - 8.4" },
+  { name: "Anchovy", diseases: ["Bacterial infection"], ph: "7.5 - 8.5" },
   { name: "Angelfish", diseases: ["Ich"], ph: "7.8 - 8.4" },
-  { name: "Butterflyfish", diseases: ["Marine ich"], ph: "7.8 - 8.4" },
-  { name: "Lionfish", diseases: ["Fin rot"], ph: "7.8 - 8.4" },
-  { name: "Tang", diseases: ["Ich"], ph: "7.8 - 8.4" },
-
-  { name: "Betta", diseases: ["Fin rot"], ph: "6.0 - 7.5" },
-  { name: "Guppy", diseases: ["Ich", "Fin rot"], ph: "6.8 - 7.8" },
-  { name: "Molly", diseases: ["Fungal infection"], ph: "7.0 - 8.0" },
-  { name: "Platy", diseases: ["Ich"], ph: "7.0 - 8.2" },
-  { name: "Goldfish", diseases: ["Swim bladder disease"], ph: "6.5 - 7.5" },
-  { name: "Koi", diseases: ["KHV"], ph: "6.8 - 8.0" },
-  { name: "Oscar", diseases: ["Hole in head disease"], ph: "6.0 - 7.5" },
-  { name: "Discus", diseases: ["Hexamita"], ph: "6.0 - 7.0" },
   { name: "Arowana", diseases: ["Gill curl"], ph: "6.5 - 7.5" },
-  { name: "Flowerhorn", diseases: ["Head disease"], ph: "7.0 - 8.0" },
-
-  { name: "Piranha", diseases: ["Bacterial infection"], ph: "6.5 - 7.5" },
-  { name: "Tetra", diseases: ["Neon tetra disease"], ph: "6.0 - 7.0" },
+  { name: "Archerfish", diseases: ["Fin rot"], ph: "6.5 - 7.5" },
+  { name: "Barracuda", diseases: ["Skin parasites"], ph: "7.5 - 8.5" },
   { name: "Barb", diseases: ["Ich"], ph: "6.5 - 7.5" },
-  { name: "Danio", diseases: ["Fin rot"], ph: "6.5 - 7.5" },
-  { name: "Loach", diseases: ["Skin parasites"], ph: "6.5 - 7.5" },
-  { name: "Cichlid", diseases: ["Bloat"], ph: "7.0 - 8.5" },
-  { name: "Catfish", diseases: ["Columnaris"], ph: "6.5 - 8.0" },
-  { name: "Sturgeon", diseases: ["Gill disease"], ph: "6.5 - 8.0" },
-  { name: "Perch", diseases: ["Fungal infection"], ph: "6.5 - 7.5" },
-  { name: "Bass", diseases: ["Largemouth disease"], ph: "6.5 - 8.0" }
-];
-</script>
-/* ===== YOUR 100 FISH DATA (UNCHANGED) ===== */
-const fishDB = [ /* FULL LIST EXACTLY AS YOU SENT */ ];
-</script>
+  { name: "Bass", diseases: ["Largemouth disease"], ph: "6.5 - 8.0" },
+  { name: "Betta", diseases: ["Fin rot"], ph: "6.0 - 7.5" },
 
-<script>
+  { name: "Black Drum", diseases: ["Gill disease"], ph: "7.0 - 8.5" },
+  { name: "Blue Marlin", diseases: ["Parasites"], ph: "7.8 - 8.4" },
+  { name: "Blue Tang", diseases: ["Marine ich"], ph: "7.8 - 8.4" },
+  { name: "Bonito", diseases: ["Bacterial infection"], ph: "7.5 - 8.4" },
+  { name: "Bullhead Catfish", diseases: ["Columnaris"], ph: "6.5 - 8.0" },
+  { name: "Butterflyfish", diseases: ["Marine ich"], ph: "7.8 - 8.4" },
+  { name: "Carp", diseases: ["KHV"], ph: "6.5 - 8.0" },
+  { name: "Catfish", diseases: ["Columnaris"], ph: "6.5 - 8.0" },
+  { name: "Catla", diseases: ["Dropsy"], ph: "6.5 - 7.5" },
+  { name: "Cherry Barb", diseases: ["Fin rot"], ph: "6.5 - 7.5" },
+
+  { name: "Climbing Perch", diseases: ["Gill rot"], ph: "6.0 - 8.0" },
+  { name: "Clownfish", diseases: ["Brooklynella"], ph: "7.8 - 8.4" },
+  { name: "Cod", diseases: ["Viral hemorrhagic septicemia"], ph: "7.0 - 8.5" },
+  { name: "Common Carp", diseases: ["Ulcer disease"], ph: "6.5 - 8.0" },
+  { name: "Corydoras", diseases: ["Barbel erosion"], ph: "6.0 - 7.5" },
+  { name: "Croaker", diseases: ["Gill disease"], ph: "7.0 - 8.5" },
+  { name: "Danio", diseases: ["Fin rot"], ph: "6.5 - 7.5" },
+  { name: "Discus", diseases: ["Hexamita"], ph: "6.0 - 7.0" },
+  { name: "Dogfish", diseases: ["Skin infection"], ph: "7.5 - 8.5" },
+
+  { name: "Dorado", diseases: ["Parasites"], ph: "7.5 - 8.5" },
+  { name: "Electric Eel", diseases: ["Skin parasites"], ph: "6.5 - 7.5" },
+  { name: "Eel", diseases: ["Skin parasites"], ph: "6.5 - 8.0" },
+  { name: "Emperor Fish", diseases: ["Gill disease"], ph: "7.8 - 8.4" },
+  { name: "Featherback", diseases: ["Fungal infection"], ph: "6.5 - 7.5" },
+  { name: "Firemouth Cichlid", diseases: ["Ich"], ph: "7.0 - 8.0" },
+  { name: "Flatfish", diseases: ["Parasites"], ph: "7.0 - 8.5" },
+  { name: "Flowerhorn", diseases: ["Head disease"], ph: "7.0 - 8.0" },
+  { name: "Flying Fish", diseases: ["Gill parasites"], ph: "7.5 - 8.5" },
+
+  { name: "Foxface Rabbitfish", diseases: ["Marine ich"], ph: "7.8 - 8.4" },
+  { name: "Gar", diseases: ["Skin infection"], ph: "6.5 - 8.0" },
+  { name: "Glass Catfish", diseases: ["Stress disease"], ph: "6.5 - 7.5" },
+  { name: "Goldfish", diseases: ["Swim bladder disease"], ph: "6.5 - 7.5" },
+  { name: "Gourami", diseases: ["Ich"], ph: "6.0 - 7.5" },
+  { name: "Grass Carp", diseases: ["Gill disease"], ph: "6.5 - 8.0" },
+  { name: "Grouper", diseases: ["Vibriosis"], ph: "7.8 - 8.4" },
+  { name: "Guppy", diseases: ["Fin rot"], ph: "6.8 - 7.8" },
+  { name: "Hammerhead Shark", diseases: ["Parasites"], ph: "7.5 - 8.5" },
+
+  { name: "Hilsa", diseases: ["EUS"], ph: "6.5 - 7.5" },
+  { name: "Jackfish", diseases: ["Bacterial infection"], ph: "7.5 - 8.5" },
+  { name: "Kissing Gourami", diseases: ["Fungal infection"], ph: "6.5 - 7.5" },
+  { name: "Knife Fish", diseases: ["Skin parasites"], ph: "6.5 - 7.5" },
+  { name: "Koi", diseases: ["KHV"], ph: "6.8 - 8.0" },
+  { name: "Lamprey", diseases: ["Skin parasites"], ph: "6.5 - 8.0" },
+  { name: "Lionfish", diseases: ["Fin rot"], ph: "7.8 - 8.4" },
+  { name: "Loach", diseases: ["Skin parasites"], ph: "6.5 - 7.5" },
+  { name: "Mackerel", diseases: ["Gill parasites"], ph: "7.5 - 8.5" },
+
+  { name: "Mandarinfish", diseases: ["Skin parasites"], ph: "7.8 - 8.4" },
+  { name: "Milkfish", diseases: ["Vibriosis"], ph: "7.0 - 8.5" },
+  { name: "Molly", diseases: ["Fungal infection"], ph: "7.0 - 8.0" },
+  { name: "Moonfish", diseases: ["Gill disease"], ph: "7.5 - 8.5" },
+  { name: "Moray Eel", diseases: ["Skin infection"], ph: "7.5 - 8.5" },
+  { name: "Needlefish", diseases: ["Parasites"], ph: "7.5 - 8.5" },
+  { name: "Oscar", diseases: ["Hole in head disease"], ph: "6.0 - 7.5" },
+  { name: "Parrotfish", diseases: ["Marine ich"], ph: "7.8 - 8.4" },
+  { name: "Perch", diseases: ["Fungal infection"], ph: "6.5 - 7.5" },
+
+  { name: "Pike", diseases: ["Parasites"], ph: "6.5 - 8.0" },
+  { name: "Piranha", diseases: ["Bacterial infection"], ph: "6.5 - 7.5" },
+  { name: "Platy", diseases: ["Ich"], ph: "7.0 - 8.2" },
+  { name: "Pomfret", diseases: ["Fungal infection"], ph: "7.0 - 8.0" },
+  { name: "Rainbowfish", diseases: ["Fin rot"], ph: "6.5 - 7.8" },
+  { name: "Ray", diseases: ["Parasites"], ph: "7.5 - 8.5" },
+  { name: "Red Snapper", diseases: ["Gill disease"], ph: "7.8 - 8.4" },
+  { name: "Rohu", diseases: ["EUS"], ph: "6.0 - 7.5" },
+  { name: "Sailfish", diseases: ["Parasites"], ph: "7.8 - 8.4" },
+
+  { name: "Salmon", diseases: ["Sea lice"], ph: "6.8 - 7.5" },
+  { name: "Sardine", diseases: ["Bacterial infection"], ph: "7.5 - 8.5" },
+  { name: "Scat Fish", diseases: ["Fungal infection"], ph: "7.0 - 8.0" },
+  { name: "Seahorse", diseases: ["Tail rot"], ph: "7.8 - 8.4" },
+  { name: "Shark", diseases: ["Skin infection"], ph: "7.5 - 8.5" },
+  { name: "Silver Carp", diseases: ["Parasites"], ph: "6.5 - 8.0" },
+  { name: "Snapper", diseases: ["Fin erosion"], ph: "7.8 - 8.4" },
+  { name: "Sturgeon", diseases: ["Gill disease"], ph: "6.5 - 8.0" },
+  { name: "Swordfish", diseases: ["Parasites"], ph: "7.8 - 8.4" },
+
+  { name: "Tang", diseases: ["Ich"], ph: "7.8 - 8.4" },
+  { name: "Tetra", diseases: ["Neon tetra disease"], ph: "6.0 - 7.0" },
+  { name: "Tilapia", diseases: ["Fin rot"], ph: "6.5 - 8.5" },
+  { name: "Trout", diseases: ["Whirling disease"], ph: "6.5 - 7.5" },
+  { name: "Tuna", diseases: ["Parasites"], ph: "7.5 - 8.4" },
+  { name: "Zebra Danio", diseases: ["Fin rot"], ph: "6.5 - 7.5" }
+];
+
   const select = document.getElementById('fishSelect');
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -138,12 +219,14 @@ const fishDB = [ /* FULL LIST EXACTLY AS YOU SENT */ ];
 
   select.addEventListener('change', () => {
     const selected = fishDB.find(f => f.name === select.value);
+    
     if (!selected) {
       fishName.innerText = "Official Name: -";
       fishDisease.innerText = "Possible Diseases: -";
       fishPH.innerText = "Optimal pH Level: -";
       return;
     }
+
     fishName.innerText = "Official Name: " + selected.name;
     fishDisease.innerText = "Possible Diseases: " + selected.diseases.join(", ");
     fishPH.innerText = "Optimal pH Level: " + selected.ph;
@@ -154,7 +237,7 @@ const fishDB = [ /* FULL LIST EXACTLY AS YOU SENT */ ];
       alert("Please select a fish first!");
       return;
     }
-    alert(select.value + " info posted to community (next step: Firestore)");
+    alert(select.value + " information posted to community (Firestore step next).");
   }
 </script>
 
