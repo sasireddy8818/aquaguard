@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AquaGuard | Login</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+
+  <div class="auth-card">
+    <h1>🌊 AquaGuard</h1>
+    <p class="tagline">Water & Environmental Awareness</p>
+
+    <input type="email" id="email" placeholder="Enter email">
+    <input type="password" id="password" placeholder="Enter password">
+    <button id="loginBtn">Login</button>
+
+    <p class="switch">
+      Don’t have an account? <a href="signup.html">Sign up</a>
+    </p>
+  </div>
+
+  <!-- 🔹 Include Firebase initialization first -->
+  <script src="js/Firebase.js"></script>
+
+  <!-- 🔹 Login logic -->
+  <script>
+    const loginBtn = document.getElementById("loginBtn");
+
+    loginBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // Stop page refresh if in a form
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if(!email || !password){
+        alert("Please enter email and password");
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          console.log("Logged in:", userCredential.user.email);
+          window.location.replace("home.html"); // redirect safely
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    });
+  </script>
+</body>
+</html>

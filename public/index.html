@@ -3,31 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>AquaGuard | Home</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 
   <!-- Firebase SDK (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-  <script>
-    // 🔹 Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDukojn29YNXCDuJMg42Hf16KQACimWDiU",
-      authDomain: "aquaguard-6df87.firebaseapp.com",
-      projectId: "aquaguard-6df87",
-      storageBucket: "aquaguard-6df87.firebasestorage.app",
-      messagingSenderId: "158543306089",
-      appId: "1:158543306089:web:329bd1e66b9ae1391431f8"
-    };
-
-    // 🔹 Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-  </script>
 
   <style>
     body.home-page {
@@ -94,15 +76,12 @@
 </head>
 <body class="home-page">
 
-  <button onclick="logout()" class="logout-btn">Logout</button>
-
   <header class="header">
     <h1>🌊 AquaGuard</h1>
     <p>Water & Environmental Awareness</p>
   </header>
 
   <section class="features">
-
     <div class="feature-card" onclick="goPage('water.html')">
       <span class="icon">💧</span>
       <h3>Water Pollution</h3>
@@ -126,33 +105,35 @@
       <h3>Community</h3>
       <p>View & share awareness reports</p>
     </div>
-
   </section>
 
+  <!-- 1️⃣ Firebase initialization first -->
+  <script src="js/Firebase.js"></script>
+
+  <!-- 2️⃣ Custom scripts -->
   <script>
-    // Navigate to feature page
+    // ✅ Protect page: redirect if not logged in
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.replace("login.html");
+      }
+    });
+
+    // ✅ Navigate to feature page
     function goPage(page) {
       window.location.href = page;
     }
 
-    // 🔹 Firebase logout
+    // ✅ Logout function
     function logout() {
       auth.signOut()
-        .then(() => {
-          window.location.href = "login.html";
-        })
-        .catch((error) => {
-          alert("Logout error: " + error.message);
-        });
+        .then(() => window.location.replace("login.html"))
+        .catch(error => alert("Logout error: " + error.message));
     }
-
-    // 🔹 Redirect if user not logged in
-    auth.onAuthStateChanged((user) => {
-      if(!user){
-        window.location.href = "login.html";
-      }
-    });
   </script>
+
+  <!-- 3️⃣ Logout button -->
+  <button onclick="logout()" class="logout-btn">Logout</button>
 
 </body>
 </html>

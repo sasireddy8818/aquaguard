@@ -1,0 +1,271 @@
+/* =========================
+   LOGIN PAGE (BLUE & WHITE)
+========================= */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  background: linear-gradient(to bottom, #1976d2, #e3f2fd);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background-color: white;
+  padding: 35px;
+  width: 320px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.login-box h2 {
+  color: #1976d2;
+  margin-bottom: 5px;
+}
+
+.login-box p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.login-box input:focus {
+  border-color: #1976d2;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background-color: #125aa3;
+}
+/* =========================
+   LOGIN & SIGNUP - BLUE THEME
+========================= */
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0d47a1, #1976d2, #42a5f5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  background: white;
+  padding: 30px;
+  width: 320px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+.app-title {
+  color: #1976d2;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.tagline {
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 14px;
+  color: #1976d2;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+input:focus {
+  border-color: #1976d2;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #2196f3, #1565c0);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.switch {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.switch a {
+  color: #1976d2;
+  font-weight: bold;
+  text-decoration: none;
+}
+/* =====================
+   HOME PAGE – BLUE & WHITE THEME
+===================== */
+
+.home-page {
+  background-color: #eaf6fb;
+  min-height: 100vh;
+}
+
+/* Header */
+.home-header {
+  background-color: #1976d2;
+  color: white;
+  text-align: center;
+  padding: 25px 10px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Features section */
+.features {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 40px 20px;
+  flex-wrap: wrap;
+}
+
+/* Feature cards */
+.feature-card {
+  background: white;
+  width: 130px;       /* ⬅️ final smaller width */
+  padding: 10px;      /* ⬅️ smaller padding */
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}R
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Emoji icons */
+.feature-card span {
+  font-size: 32px;           /* ↓ reduced from 40 */
+  display: block;
+  margin-bottom: 8px;
+}
+
+.feature-card h3 {
+  color: #1976d2;
+  font-size: 16px;           /* ↓ smaller heading */
+  margin-bottom: 6px;
+}
+
+.feature-card p {
+  color: #555;
+  font-size: 13px;           /* ↓ smaller text */
+}
+/* =====================
+   WATER FEATURE WHITE BOX
+===================== */
+.water-feature-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.water-feature {
+  background: white;
+  padding: 25px 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  text-align: center;
+}
+.water-feature button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.water-feature button:hover {
+  background-color: #1565c0;
+}
+.fish-feature-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.fish-feature {
+  background: white;
+  padding: 25px 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+.fish-feature button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.fish-feature button:hover {
+  background-color: #1565c0;
+}
+
+.fish-info-box {
+  background-color: #eaf6fb;
+  color: #1976d2;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}
