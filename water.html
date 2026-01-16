@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AquaGuard - Water Pollution</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-family: Arial; background: #e0f7fa; color: #01579b; margin:0; padding:0; }
+    header { text-align: center; padding: 20px; background: #0288d1; color: white; }
+    .container { padding: 20px; }
+    input, button, select { padding: 10px; margin: 5px 0; }
+    .box { background: white; padding: 15px; margin-top: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    #pollutionLevel { font-weight: bold; }
+  </style>
+
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <!-- Firebase Config -->
+</head>
+<body>
+  <script src="js/script.js"></script>
+
+<header>
+  <h1>AquaGuard - Water Pollution</h1>
+</header>
+
+<div class="container">
+
+  <div class="box">
+    <h3>Upload Water Photo & Select Pollution Level</h3>
+    <input type="file" id="waterPhoto" accept="image/*" capture="environment">
+    <select id="pollutionSelect">
+      <option value="">Select Pollution Level</option>
+      <option value="Low">Low 🌿</option>
+      <option value="Medium">Medium ⚠️</option>
+      <option value="High">High 🔴</option>
+    </select>
+    <button id="uploadBtn">Upload & Report</button>
+    <p id="status"></p>
+    <p>Pollution Level: <span id="pollutionLevel">N/A</span></p>
+  </div>
+
+  <div class="box">
+    <h3>Community Reports</h3>
+    <ul id="reportsList"></ul>
+  </div>
+
+</div>
+
+<script>
+  const uploadBtn = document.getElementById("uploadBtn");
+  const photoInput = document.getElementById("waterPhoto");
+  const pollutionSelect = document.getElementById("pollutionSelect");
+  const status = document.getElementById("status");
+  const pollutionLevelDisplay = document.getElementById("pollutionLevel");
+  const reportsList = document.getElementById("reportsList");
+
+  // Listen for community reports in real-time
+  db.collection("waterReports").orderBy("timestamp","desc")
+    .onSnapshot(snapshot => {
+      reportsList.innerHTML = "";
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.email}: ${data.fileName} - ${data.pollution}`;
+        reportsList.appendChild(li);
+      });
+    });
+
+  // Upload photo
+  uploadBtn.addEventListener("click", () => {
+    const file = photoInput.files[0];
+    const pollution = pollutionSelect.value;
+
+    if(!file){
+      alert("Please select a photo");
+      return;
+    }
+    if(!pollution){
+      alert("Please select pollution level");
+      return;
+    }
+
+    const user = auth.currentUser;
+    if(!user){
+      alert("You must be logged in to upload");
+      return;
+    }
+
+    const storageRef = storage.ref("waterPhotos/" + file.name);
+    storageRef.put(file).then(() => {
+      // Save report to Firestore
+      db.collection("waterReports").add({
+        email: user.email,
+        fileName: file.name,
+        pollution: pollution,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        status.textContent = "Photo uploaded successfully!";
+        pollutionLevelDisplay.textContent = pollution;
+        photoInput.value = "";
+        pollutionSelect.value = "";
+      }).catch(err => {
+        status.textContent = "Error saving report: " + err.message;
+      });
+    }).catch(err => {
+      status.textContent = "Error uploading file: " + err.message;
+    });
+  });
+</script>
+
+</body>
+</html>
